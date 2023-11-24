@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Route, NavLink } from "react-router-dom";
 import Item from "./components/Item";
 import FavItem from "./components/FavItem";
+import { UseSelector , useDispatch, useSelector } from "react-redux";
+import { fetchAnother, addFav , getFavsFromLocalStorage } from "./actions";
 
 export default function App() {
-  const loading = false;
-  const current = null;
-  const favs = [];
+  const loading = useSelector((store) => store.loading);
+  const current = useSelector((store) => store.current);
+  const favs  =useSelector((store) => store.favs);
+
+  const dispatch= useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAnother());
+    dispatch (getFavsFromLocalStorage()); }, []);
 
   function addToFavs() {
+    dispatch(addToFavs(current));
   }
 
 
@@ -38,7 +47,7 @@ export default function App() {
           {current && <Item data={current} />}
 
           <div className="flex gap-3 justify-end py-3">
-            <button
+            <button onClick={()=> dispatch(fetchAnother())}
               className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
             >
               Başka bir tane
